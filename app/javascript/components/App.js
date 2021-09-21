@@ -46,7 +46,8 @@ angularApp.run([
 const template = `
 <div>
   <h2>{{ heading }}</h2>
-  <div ng-controller="angularController1">
+  <div ng-controller="angularController1" ng-style="{ width: 300px }">
+    <h3>angularController1</h3>
     <label htmlFor="ng-input">Type something here: </label>
     <input
       type="text"
@@ -58,8 +59,9 @@ const template = `
   </div>
 
   <div ng-controller="angularController2">
-    <h2>React input: {{ reactInput }}</h2>
-    <h4>{{ text }}</h4>
+    <h3>angularController2</h3>
+    <h4>React input: {{ reactInput }}</h4>
+    <h4>angularController1 submission: {{ text }}</h4>
   </div>
 </div>
 `
@@ -84,6 +86,7 @@ const App = () => {
 
     return () => {
       console.log('destroying angular scope')
+      rootScopeRef.current.$destroy()
     }
   }, [])
 
