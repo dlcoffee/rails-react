@@ -1,8 +1,6 @@
 import React from 'react'
 import angular from 'angular'
 
-// console.log(angular)
-
 /** Angular.js code
  */
 
@@ -12,6 +10,14 @@ angularApp.controller('appController', [
   '$scope',
   function ($scope) {
     $scope.text = 'angular input'
+  },
+])
+
+angularApp.run([
+  '$rootScope',
+  function (rootScope) {
+    rootScope.$broadcast('appConfigured')
+    console.log('app.run $rootScope', rootScope)
   },
 ])
 
@@ -35,7 +41,12 @@ const App = () => {
   const ngAppRef = React.useRef(null)
 
   React.useEffect(() => {
-    angular.bootstrap(ngAppRef.current, ['angularApp'])
+    const $injector = angular.bootstrap(ngAppRef.current, ['angularApp'])
+    console.log('useEffect $_rootscope:', $injector.get('$rootScope'))
+
+    return () => {
+      console.log('destroying angular scope')
+    }
   }, [])
 
   const handleChange = (e) => {
@@ -58,7 +69,11 @@ const App = () => {
       </div>
 
       <div style={{ margin: 12 }}>
-        <div ref={ngAppRef} dangerouslySetInnerHTML={{ __html: template }} />
+        <div
+          className="test"
+          ref={ngAppRef}
+          dangerouslySetInnerHTML={{ __html: template }}
+        />
       </div>
     </div>
   )
