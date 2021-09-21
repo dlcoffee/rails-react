@@ -58,6 +58,7 @@ const template = `
   </div>
 
   <div ng-controller="angularController2">
+    <h2>React input: {{ reactInput }}</h2>
     <h4>{{ text }}</h4>
   </div>
 </div>
@@ -69,20 +70,27 @@ const template = `
 const App = () => {
   const [input, setInput] = React.useState('react input')
   const ngAppRef = React.useRef(null)
+  const rootScopeRef = React.useRef(null)
 
   React.useEffect(() => {
     const $injector = angular.bootstrap(ngAppRef.current, ['angularApp'])
-    const $rootScope = $injector.get('$rootScope')
+    rootScopeRef.current = $injector.get('$rootScope')
 
-    $rootScope.heading = 'This is an AngularJS application'
-    $rootScope.$digest()
+    rootScopeRef.current.heading = 'This is an AngularJS application'
+    rootScopeRef.current.reactInput = input
+    rootScopeRef.current.$digest()
 
-    console.log('useEffect $_rootscope:', $rootScope)
+    console.log('useEffect $_rootscope:', rootScopeRef.current)
 
     return () => {
       console.log('destroying angular scope')
     }
   }, [])
+
+  React.useEffect(() => {
+    rootScopeRef.current.reactInput = input
+    rootScopeRef.current.$digest()
+  }, [input])
 
   const handleChange = (e) => {
     setInput(e.target.value)
